@@ -29,34 +29,54 @@ const Home = () => {
       const updatedList = [...list, newTask];
 
 
-      fetch('https://assets.breatheco.de/apis/fake/todos/user/jorgesamper', {
+     fetch("https://assets.breatheco.de/apis/fake/todos/user/jorgesamper", {
+        method: "PUT",
+        body: JSON.stringify(updatedList),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+        .then((resp) => resp.json())
+        .then((data) => {
+          console.log(data);
+          setList(updatedList);
+          setValue("");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
+
+  const handleDelete = (id) => {
+    const updatedList = list.filter((item) => item.id !== id);
+    fetch("https://assets.breatheco.de/apis/fake/todos/user/jorgesamper", {
       method: "PUT",
-      body: JSON.stringify(todos),
+      body: JSON.stringify(updatedList),
       headers: {
         "Content-Type": "application/json"
       }
     })
-    .then(resp => {
-        console.log(resp.ok); // Será true (verdad) si la respuesta es exitosa.
-        console.log(resp.status); // el código de estado = 200 o código = 400 etc.
-        console.log(resp.text()); // Intentará devolver el resultado exacto como cadena (string)
-        return resp.json(); // (regresa una promesa) will try to parse the result as json as return a promise that you can .then for results
-    })
-    .then(data => {
-        //Aquí es donde debe comenzar tu código después de que finalice la búsqueda
-        console.log(data); //esto imprimirá en la consola el objeto exacto recibido del servidor
-    })
-    .catch(error => {
-        //manejo de errores
+      .then((resp) => resp.json())
+      .then((data) => {
+        console.log(data);
+        setList(updatedList);
+      })
+      .catch((error) => {
         console.log(error);
-    });
-    }
+      });
   };
 
-  /** Esto seguro que hay que cambiarlo: 4 */
-  const handleDelete = (index) => {
-    setList((prev) => prev.filter((_, i) => i !== index));
-  };
+  useEffect(() => {
+    fetch("https://assets.breatheco.de/apis/fake/todos/user/jorgesamper")
+      .then((resp) => resp.json())
+      .then((data) => {
+        setList(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   return (
     <div className="text-center bg-light shadow-sm mx-3">
