@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 const Home = () => {
   const [value, setValue] = useState("");
   // Creamos la lista 
   const [list, setList] = useState([{
-    label:"First task and not least", 
-    id:"1",
-    done:false
-  }]); // Es un objeto que tenga label {label:"",id:"1",done: false} 
+    // label:"First task and not least", 
+    // id:"1",
+    // done:false
+  }]); 
 
   // Ahora mismo -> Array(strings) -> ["First task and not least"]
   // Next -> Array(objects) -> [{label:"First task and not least", id:"1",done:false}]
@@ -26,10 +26,13 @@ const Home = () => {
     setValue(e.target.value);
   };
 
+  setList(updatedList);
+  setValue("");
+
   const handleClick = () => {
     if (value.trim() !== "") {
       // Se crea un nuevo objeto de tarea con el valor actual y estado inicial de "done"
-      const newTask = { label: value, done: false,  id: Date.now().toString() };
+      const newTask = { label: value, done: false };
       // Crear una nueva lista con la tarea agregada al final
       const updatedList = [...list, newTask];
 
