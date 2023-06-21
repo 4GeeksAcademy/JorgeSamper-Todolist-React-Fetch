@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const Home = () => {
   const [value, setValue] = useState("");
   // Creamos la lista 
-  const [list, setList] = useState([{label:"First task and not least", id:"1",done:false}]); // Es un objeto que tenga label {label:"",id:"1",done: false} 
+  const [list, setList] = useState([{
+    label:"First task and not least", 
+    id:"1",
+    done:false
+  }]); // Es un objeto que tenga label {label:"",id:"1",done: false} 
 
   // Ahora mismo -> Array(strings) -> ["First task and not least"]
   // Next -> Array(objects) -> [{label:"First task and not least", id:"1",done:false}]
@@ -24,12 +28,13 @@ const Home = () => {
 
   const handleClick = () => {
     if (value.trim() !== "") {
-      /** Esto seguro que hay que cambiarlo:3 */
-      const newTask = { label: value, done: false };
+      // Se crea un nuevo objeto de tarea con el valor actual y estado inicial de "done"
+      const newTask = { label: value, done: false,  id: Date.now().toString() };
+      // Crear una nueva lista con la tarea agregada al final
       const updatedList = [...list, newTask];
 
-
-     fetch("https://assets.breatheco.de/apis/fake/todos/user/jorgesamper", {
+      // Enviar la lista actualizada al servidor utilizando el método PUT
+      fetch("https://assets.breatheco.de/apis/fake/todos/user/jorgesamper", {
         method: "PUT",
         body: JSON.stringify(updatedList),
         headers: {
@@ -39,6 +44,7 @@ const Home = () => {
         .then((resp) => resp.json())
         .then((data) => {
           console.log(data);
+          // Actualizar la lista local y restablecer el valor del campo de entrada
           setList(updatedList);
           setValue("");
         })
@@ -49,7 +55,10 @@ const Home = () => {
   };
 
   const handleDelete = (id) => {
+    // Filtrar la lista para eliminar la tarea con el ID especificado
     const updatedList = list.filter((item) => item.id !== id);
+
+    // Enviar la lista actualizada al servidor utilizando el método PUT
     fetch("https://assets.breatheco.de/apis/fake/todos/user/jorgesamper", {
       method: "PUT",
       body: JSON.stringify(updatedList),
@@ -60,6 +69,7 @@ const Home = () => {
       .then((resp) => resp.json())
       .then((data) => {
         console.log(data);
+        // Actualizar la lista local
         setList(updatedList);
       })
       .catch((error) => {
@@ -68,6 +78,7 @@ const Home = () => {
   };
 
   useEffect(() => {
+    // Cargar la lista inicial desde el servidor cuando el componente se monta
     fetch("https://assets.breatheco.de/apis/fake/todos/user/jorgesamper")
       .then((resp) => resp.json())
       .then((data) => {
